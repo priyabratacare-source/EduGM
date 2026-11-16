@@ -23,7 +23,7 @@ concurrency:
 jobs:
   deploy:
     name: Deploy EduGM Website
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     environment:
       name: github-pages
@@ -31,7 +31,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
