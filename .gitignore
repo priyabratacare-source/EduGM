@@ -1,6 +1,5 @@
-
 node_modules/
-android/
-dist/
+android/.gradle/
+android/build/
+android/app/build/
 .DS_Store
-*.log
