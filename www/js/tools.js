@@ -140,7 +140,8 @@ function createDownload(blob, filename) {
     link.click();
     link.remove();
 
-    setTimeout(() => URL.revokeObjectURL(url), 1500);
+    // Give mobile browsers enough time to start the download.
+    window.setTimeout(() => URL.revokeObjectURL(url), 30000);
 }
 
 function loadImage(file) {
@@ -294,6 +295,8 @@ function percentageTool() {
         const maximum = Number($("#maximum").value);
 
         if (
+            !Number.isFinite(obtained) ||
+            !Number.isFinite(maximum) ||
             maximum <= 0 ||
             obtained < 0 ||
             obtained > maximum
@@ -545,27 +548,45 @@ function imageTool() {
 
         const operation = $("#imageOperation").value;
         const format = $("#imageFormat").value;
-        const quality = Number($("#quality").value) / 100;
+        const qualityPercent = Number($("#quality").value);
+        const quality = qualityPercent / 100;
+
+        if (!Number.isFinite(qualityPercent) || qualityPercent < 10 || qualityPercent > 100) {
+            throw new Error("Choose image quality between 10% and 100%.");
+        }
 
         const canvas = document.createElement("canvas");
 
         if (operation === "resize") {
-            canvas.width = Number($("#imageWidth").value);
-            canvas.height = Number($("#imageHeight").value);
+            const maxWidth = Number($("#imageWidth").value);
+            const maxHeight = Number($("#imageHeight").value);
+
+            if (
+                !Number.isFinite(maxWidth) ||
+                !Number.isFinite(maxHeight) ||
+                maxWidth < 1 ||
+                maxHeight < 1
+            ) {
+                throw new Error("Enter valid output dimensions.");
+            }
+
+            // Fit inside the requested box without stretching the original image.
+            const scale = Math.min(
+                maxWidth / image.naturalWidth,
+                maxHeight / image.naturalHeight
+            );
+
+            canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+            canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
         } else {
             canvas.width = image.naturalWidth;
             canvas.height = image.naturalHeight;
         }
 
         const context = canvas.getContext("2d");
+        if (!context) throw new Error("Your device could not process this image.");
 
-        context.drawImage(
-            image,
-            0,
-            0,
-            canvas.width,
-            canvas.height
-        );
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
 
         const output = await canvasBlob(
             canvas,
@@ -621,6 +642,7 @@ function cropTool() {
         const height = Number($("#cropHeight").value);
 
         if (
+            ![x, y, width, height].every(Number.isFinite) ||
             x < 0 ||
             y < 0 ||
             width <= 0 ||
@@ -901,7 +923,11 @@ function cameraTool() {
             throw new Error("Please select an image.");
         }
 
-        createDownload(file, "edugm-camera-photo");
+        const extension = file.name.includes(".")
+            ? file.name.split(".").pop().toLowerCase()
+            : "jpg";
+
+        createDownload(file, "edugm-camera-photo." + extension);
 
         showResult("Your selected photo has been downloaded.");
     });
