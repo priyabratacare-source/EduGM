@@ -1,4 +1,4 @@
-const CACHE_NAME = "edugm-unitools-v2";
+const CACHE_NAME = "edugm-unitools-v3";
 
 const APP_FILES = [
     "./",
@@ -11,8 +11,7 @@ const APP_FILES = [
     "./js/app.js",
     "./js/tools.js",
     "./js/contact.js",
-    "./js/firebase-config.js",
-    "./assets/logo.png"
+    "./js/firebase-config.js"
 ];
 
 self.addEventListener("install", event => {
@@ -42,14 +41,13 @@ self.addEventListener("fetch", event => {
     const url = new URL(request.url);
     if (url.origin !== self.location.origin) return;
 
-    // Always try the network first for page navigation so published updates appear.
     if (request.mode === "navigate") {
         event.respondWith((async () => {
             try {
                 const response = await fetch(request);
                 if (response && response.ok) {
                     const cache = await caches.open(CACHE_NAME);
-                    cache.put("./index.html", response.clone()).catch(() => {});
+                    await cache.put(request, response.clone()).catch(() => {});
                 }
                 return response;
             } catch {
@@ -64,25 +62,18 @@ self.addEventListener("fetch", event => {
         return;
     }
 
-    // App assets are served from cache immediately, then refreshed from network.
+    // Cache-first for local app assets; network response is cached on first use.
     event.respondWith((async () => {
         const cached = await caches.match(request);
-        const networkPromise = fetch(request).then(response => {
-            if (response && response.ok && response.type === "basic") {
-                caches.open(CACHE_NAME)
-                    .then(cache => cache.put(request, response.clone()))
-                    .catch(() => {});
-            }
-            return response;
-        });
-
-        if (cached) {
-            event.waitUntil(networkPromise.then(() => {}).catch(() => {}));
-            return cached;
-        }
+        if (cached) return cached;
 
         try {
-            return await networkPromise;
+            const response = await fetch(request);
+            if (response && response.ok && response.type === "basic") {
+                const cache = await caches.open(CACHE_NAME);
+                await cache.put(request, response.clone()).catch(() => {});
+            }
+            return response;
         } catch {
             return new Response("This resource is not available offline.", {
                 status: 503,
