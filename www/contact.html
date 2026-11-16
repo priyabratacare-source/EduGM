@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#6546e8">
+    <title>Contact Us | EduGM UniTools</title>
+    <link rel="icon" href="assets/logo.png">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+    <a class="brand" href="index.html">
+        <img src="assets/logo.png" alt="EduGM Logo"
+             onerror="this.style.display='none'">
+        <span>EduGM <b>UniTools</b></span>
+    </a>
+
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+        ☰
+    </button>
+
+    <nav class="main-nav" id="mainNav">
+        <a href="index.html">Home</a>
+        <a href="tools.html">Tools</a>
+        <a href="about.html">About</a>
+        <a class="active" href="contact.html">Contact Us</a>
+        <a href="settings.html">Settings</a>
+    </nav>
+</header>
+
+<main class="container">
+
+    <section class="page-heading">
+        <span class="eyebrow">WE ARE HERE TO HELP</span>
+        <h1>Contact Us</h1>
+        <p>Send your questions, suggestions or feedback to EduGM.</p>
+    </section>
+
+    <section class="contact-layout">
+
+        <div class="contact-info card">
+            <div class="feature-icon">✉️</div>
+            <h2>Get in touch</h2>
+
+            <p>
+                Have a question about EduGM UniTools?
+                Use this form to contact our team.
+            </p>
+
+            <div class="contact-note">
+                <strong>Message storage</strong>
+                <p>
+                    Your submitted message is sent to the EduGM
+                    Firebase database. Internet access is required.
+                </p>
+            </div>
+
+            <div class="contact-note">
+                <strong>Local tools</strong>
+                <p>
+                    Your image and calculation tasks are processed
+                    locally by the supported tools.
+                </p>
+            </div>
+        </div>
+
+        <div class="contact-form-card card">
+
+            <form id="contactForm">
+
+                <div class="field">
+                    <label for="name">Full Name</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Enter your name"
+                        maxlength="100"
+                        required>
+                </div>
+
+                <div class="field">
+                    <label for="email">Email Address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        maxlength="150"
+                        required>
+                </div>
+
+                <div class="field">
+                    <label for="subject">Subject</label>
+                    <input
+                        type="text"
+                        id="subject"
+                        name="subject"
+                        placeholder="Enter subject"
+                        maxlength="150"
+                        required>
+                </div>
+
+                <div class="field">
+                    <label for="message">Your Message</label>
+                    <textarea
+                        id="message"
+                        name="message"
+                        rows="6"
+                        placeholder="Write your message..."
+                        minlength="5"
+                        maxlength="5000"
+                        required></textarea>
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary btn-full"
+                    id="sendMessageButton">
+                    Send Message →
+                </button>
+
+                <div id="contactStatus"
+                     class="form-status"
+                     role="status"
+                     aria-live="polite"></div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+</main>
+
+<footer class="site-footer">
+    <div class="footer-bottom">
+        © <span id="currentYear"></span> EduGM UniTools · CodeBihin
+    </div>
+</footer>
+
+<script type="module" src="js/app.js"></script>
+
+</body>
+</html>
