@@ -79,27 +79,27 @@ jobs:
           if "com.google.gms.google-services" not in root_text:
               if "plugins {" not in root_text:
                   raise SystemExit("Root Gradle plugins block not found.")
-              root_text = root_text.replace("plugins {", "plugins {\\n" + root_plugin, 1)
+              root_text = root_text.replace("plugins {", "plugins {\n" + root_plugin, 1)
               root_gradle.write_text(root_text)
           app_text = app_gradle.read_text()
           if app_gradle.suffix == ".kts":
               app_plugin = '    id("com.google.gms.google-services")'
-              firebase_deps = ('    implementation(platform("com.google.firebase:firebase-bom:35.2.0"))\\n'
+              firebase_deps = ('    implementation(platform("com.google.firebase:firebase-bom:35.2.0"))\n'
                                '    implementation("com.google.firebase:firebase-analytics")')
           else:
               app_plugin = "    id 'com.google.gms.google-services'"
-              firebase_deps = ("    implementation platform('com.google.firebase:firebase-bom:35.2.0')\\n"
+              firebase_deps = ("    implementation platform('com.google.firebase:firebase-bom:35.2.0')\n"
                                "    implementation 'com.google.firebase:firebase-analytics'")
           if "com.google.gms.google-services" not in app_text:
               if "plugins {" in app_text:
-                  app_text = app_text.replace("plugins {", "plugins {\\n" + app_plugin, 1)
+                  app_text = app_text.replace("plugins {", "plugins {\n" + app_plugin, 1)
               else:
-                  app_text += "\\napply plugin: 'com.google.gms.google-services'\\n"
+                  app_text += "\napply plugin: 'com.google.gms.google-services'\n"
           if "firebase-bom" not in app_text:
               if "dependencies {" in app_text:
-                  app_text = app_text.replace("dependencies {", "dependencies {\\n" + firebase_deps, 1)
+                  app_text = app_text.replace("dependencies {", "dependencies {\n" + firebase_deps, 1)
               else:
-                  app_text += "\\ndependencies {\\n" + firebase_deps + "\\n}\\n"
+                  app_text += "\ndependencies {\n" + firebase_deps + "\n}\n"
           app_gradle.write_text(app_text)
           PY
 
