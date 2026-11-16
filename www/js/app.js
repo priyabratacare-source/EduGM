@@ -25,17 +25,29 @@ function initializeEduGM() {
     const mainNav = document.getElementById("mainNav");
 
     if (menuToggle && mainNav) {
-        menuToggle.setAttribute("aria-expanded", "false");
-        menuToggle.addEventListener("click", () => {
-            const isOpen = mainNav.classList.toggle("open");
-            menuToggle.setAttribute("aria-expanded", String(isOpen));
+        const setMenu = open => {
+            mainNav.classList.toggle("open", open);
+            menuToggle.classList.toggle("active", open);
+            menuToggle.setAttribute("aria-expanded", String(open));
+            menuToggle.setAttribute("aria-label", open ? "Close navigation menu" : "Open navigation menu");
+        };
+        setMenu(false);
+        menuToggle.addEventListener("click", event => {
+            event.stopPropagation();
+            setMenu(!mainNav.classList.contains("open"));
         });
-
-        mainNav.querySelectorAll("a").forEach(link => {
-            link.addEventListener("click", () => {
-                mainNav.classList.remove("open");
-                menuToggle.setAttribute("aria-expanded", "false");
-            });
+        mainNav.querySelectorAll("a").forEach(link => link.addEventListener("click", () => setMenu(false)));
+        document.addEventListener("click", event => {
+            if (!mainNav.contains(event.target) && !menuToggle.contains(event.target)) setMenu(false);
+        });
+        document.addEventListener("keydown", event => {
+            if (event.key === "Escape") {
+                setMenu(false);
+                menuToggle.focus();
+            }
+        });
+        window.addEventListener("resize", () => {
+            if (window.innerWidth > 650) setMenu(false);
         });
     }
 
