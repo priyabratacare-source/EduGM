@@ -1,18 +1,17 @@
-
 {
   "name": "edugm-unitools",
-  "version": "1.1.0",
+  "version": "1.0.0",
   "private": true,
-  "description": "EduGM UniTools Android Application",
+  "description": "EduGM UniTools Android and web application",
   "scripts": {
-    "android": "cap sync android"
+    "android:add": "cap add android",
+    "android:sync": "cap sync android"
   },
   "dependencies": {
-    "@capacitor/core": "^7.0.0"
+    "@capacitor/android": "^7.4.3",
+    "@capacitor/core": "^7.4.3"
   },
   "devDependencies": {
-    "@capacitor/cli": "^7.0.0",
-    "@capacitor/android": "^7.0.0",
-    "@capacitor/assets": "^3.0.5"
+    "@capacitor/cli": "^7.4.3"
   }
 }
