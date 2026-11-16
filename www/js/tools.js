@@ -777,6 +777,16 @@ function passportTool() {
    PDF VIEWER
 ------------------------------ */
 
+async function loadPdfJs() {
+    if (window.__edugmPdfJs) return window.__edugmPdfJs;
+    window.__edugmPdfJs = import("https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.min.mjs")
+        .then(pdfjs => {
+            pdfjs.GlobalWorkerOptions.workerSrc = "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.worker.min.mjs";
+            return pdfjs;
+        });
+    return window.__edugmPdfJs;
+}
+
 function pdfTool() {
     workspace(`
         <h2>📕 PDF Viewer</h2>
@@ -1006,22 +1016,64 @@ function pdfTool() {
     const preview = $("#pdfPreview");
     let currentUrl = null;
 
-    $("#openPdf").addEventListener("click", () => {
+    $("#openPdf").addEventListener("click", async () => {
         const file = input.files?.[0];
         if (!file) return showResult("Select a PDF first.", true);
         if (!file.name.toLowerCase().endsWith(".pdf") && file.type !== "application/pdf") {
             return showResult("Please select a valid PDF file.", true);
         }
-        if (currentUrl) URL.revokeObjectURL(currentUrl);
-        currentUrl = URL.createObjectURL(file);
-        const frame = document.createElement("iframe");
-        frame.src = currentUrl + "#toolbar=1&navpanes=1";
-        frame.title = "PDF preview";
-        frame.style.width = "100%";
-        frame.style.height = "70vh";
-        frame.style.border = "1px solid var(--border)";
-        preview.replaceChildren(frame);
-        showResult("PDF opened. Use your browser's PDF controls to zoom or print.");
+        preview.textContent = "Opening PDF...";
+        try {
+            const pdfjs = await loadPdfJs();
+            const data = await file.arrayBuffer();
+            const pdf = await pdfjs.getDocument({ data }).promise;
+            let pageNumber = 1;
+            let scale = 1.15;
+            preview.innerHTML = `
+                <div class="pdf-toolbar">
+                    <button type="button" class="btn btn-secondary" id="pdfPrev">Previous</button>
+                    <span id="pdfPageInfo">Page 1 / ${pdf.numPages}</span>
+                    <button type="button" class="btn btn-secondary" id="pdfNext">Next</button>
+                    <button type="button" class="btn btn-secondary" id="pdfZoomOut">−</button>
+                    <button type="button" class="btn btn-secondary" id="pdfZoomIn">+</button>
+                </div>
+                <div class="pdf-canvas-wrap"><canvas id="pdfCanvas"></canvas></div>`;
+            const canvas = $("#pdfCanvas");
+            const context = canvas.getContext("2d");
+            async function renderPage() {
+                const page = await pdf.getPage(pageNumber);
+                const viewport = page.getViewport({ scale });
+                const maxWidth = Math.max(260, preview.clientWidth - 24);
+                const fit = Math.min(1, maxWidth / viewport.width);
+                const finalViewport = page.getViewport({ scale: scale * fit });
+                canvas.width = Math.floor(finalViewport.width);
+                canvas.height = Math.floor(finalViewport.height);
+                canvas.style.width = finalViewport.width + "px";
+                canvas.style.height = finalViewport.height + "px";
+                await page.render({ canvasContext: context, viewport: finalViewport }).promise;
+                $("#pdfPageInfo").textContent = "Page " + pageNumber + " / " + pdf.numPages;
+                $("#pdfPrev").disabled = pageNumber <= 1;
+                $("#pdfNext").disabled = pageNumber >= pdf.numPages;
+            }
+            $("#pdfPrev").addEventListener("click", async () => { if (pageNumber > 1) { pageNumber--; await renderPage(); } });
+            $("#pdfNext").addEventListener("click", async () => { if (pageNumber < pdf.numPages) { pageNumber++; await renderPage(); } });
+            $("#pdfZoomIn").addEventListener("click", async () => { scale = Math.min(3, scale + .2); await renderPage(); });
+            $("#pdfZoomOut").addEventListener("click", async () => { scale = Math.max(.5, scale - .2); await renderPage(); });
+            await renderPage();
+            showResult("PDF opened in EduGM viewer. Use Previous/Next and zoom controls.");
+        } catch (error) {
+            console.warn("PDF.js viewer unavailable; trying browser PDF viewer.", error);
+            if (currentUrl) URL.revokeObjectURL(currentUrl);
+            currentUrl = URL.createObjectURL(file);
+            const frame = document.createElement("iframe");
+            frame.src = currentUrl + "#toolbar=1&navpanes=1";
+            frame.title = "PDF preview";
+            frame.style.width = "100%";
+            frame.style.height = "70vh";
+            frame.style.border = "1px solid var(--border)";
+            preview.replaceChildren(frame);
+            showResult("Opened using the device's built-in PDF viewer. If the preview is blank, use Open separately.");
+        }
     });
 
     $("#newPdfTab").addEventListener("click", () => {
