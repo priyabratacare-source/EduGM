@@ -975,3 +975,47 @@ body.dark .cta-section {
         min-height: 55vh;
     }
 }
+
+
+.pdf-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+}
+
+.pdf-toolbar span {
+    padding: 6px 8px;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.pdf-toolbar .btn-secondary {
+    min-height: 36px;
+    padding: 7px 11px;
+}
+
+.pdf-canvas-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    overflow: auto;
+    max-width: 100%;
+    background: #e9e8ee;
+    border-radius: 10px;
+}
+
+.pdf-canvas-wrap canvas {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    background: #fff;
+    box-shadow: 0 2px 12px rgba(0,0,0,.16);
+}
