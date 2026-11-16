@@ -39,6 +39,13 @@ jobs:
       - name: Install Dependencies
         run: npm install --no-audit --no-fund
 
+      - name: Check JavaScript Syntax
+        run: |
+          for file in www/js/*.js; do
+            echo "Checking $file"
+            node --check "$file"
+          done
+
       - name: Verify Capacitor Configuration
         run: |
           test -f capacitor.config.json
