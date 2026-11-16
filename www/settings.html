@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#6546e8">
+    <title>Settings | EduGM UniTools</title>
+    <link rel="icon" href="assets/logo.png">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+    <a class="brand" href="index.html">
+        <img src="assets/logo.png" alt="EduGM Logo"
+             onerror="this.style.display='none'">
+        <span>EduGM <b>UniTools</b></span>
+    </a>
+
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+        ☰
+    </button>
+
+    <nav class="main-nav" id="mainNav">
+        <a href="index.html">Home</a>
+        <a href="tools.html">Tools</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact Us</a>
+        <a class="active" href="settings.html">Settings</a>
+    </nav>
+</header>
+
+<main class="container">
+
+    <section class="page-heading">
+        <span class="eyebrow">PREFERENCES</span>
+        <h1>Settings</h1>
+        <p>Manage your EduGM app preferences.</p>
+    </section>
+
+    <section class="settings-card card">
+
+        <div class="settings-row">
+            <div>
+                <h3>Dark Mode</h3>
+                <p>Change the appearance of the application.</p>
+            </div>
+
+            <label class="switch">
+                <input type="checkbox" id="darkModeToggle">
+                <span class="switch-slider"></span>
+            </label>
+        </div>
+
+        <hr>
+
+        <div class="settings-row">
+            <div>
+                <h3>Application Information</h3>
+                <p>EduGM UniTools</p>
+                <small>Learn · Calculate · Grow</small>
+            </div>
+            <span class="settings-icon">ℹ️</span>
+        </div>
+
+        <hr>
+
+        <div class="settings-row">
+            <div>
+                <h3>Data and Privacy</h3>
+                <p>
+                    Supported local tools process files on your device.
+                    Contact messages require an internet connection.
+                </p>
+            </div>
+            <span class="settings-icon">🔒</span>
+        </div>
+
+        <hr>
+
+        <div class="settings-row">
+            <div>
+                <h3>Service Worker</h3>
+                <p id="offlineStatus">Checking offline support...</p>
+            </div>
+            <span class="settings-icon">📡</span>
+        </div>
+
+    </section>
+
+</main>
+
+<footer class="site-footer">
+    <div class="footer-bottom">
+        © <span id="currentYear"></span> EduGM UniTools
+    </div>
+</footer>
+
+<script type="module" src="js/app.js"></script>
+
+</body>
+</html>
