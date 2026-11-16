@@ -1,89 +1,96 @@
-
 import { initContact } from "./contact.js";
-import {
-    initTools,
-    renderHomeTools
-} from "./tools.js";
+import { initTools, renderHomeTools } from "./tools.js";
 
-document.addEventListener("DOMContentLoaded", function () {
-
-    // Footer year
-    const year = document.getElementById("currentYear");
-
-    if (year) {
-        year.textContent = new Date().getFullYear();
+function safeStorageGet(key) {
+    try {
+        return localStorage.getItem(key);
+    } catch {
+        return null;
     }
+}
 
-    // Mobile navigation
+function safeStorageSet(key, value) {
+    try {
+        localStorage.setItem(key, value);
+    } catch (error) {
+        console.warn("EduGM could not save this preference:", error);
+    }
+}
+
+function initializeEduGM() {
+    const year = document.getElementById("currentYear");
+    if (year) year.textContent = String(new Date().getFullYear());
+
     const menuToggle = document.getElementById("menuToggle");
     const mainNav = document.getElementById("mainNav");
 
     if (menuToggle && mainNav) {
-        menuToggle.addEventListener("click", function () {
-            mainNav.classList.toggle("open");
+        menuToggle.setAttribute("aria-expanded", "false");
+        menuToggle.addEventListener("click", () => {
+            const isOpen = mainNav.classList.toggle("open");
+            menuToggle.setAttribute("aria-expanded", String(isOpen));
+        });
+
+        mainNav.querySelectorAll("a").forEach(link => {
+            link.addEventListener("click", () => {
+                mainNav.classList.remove("open");
+                menuToggle.setAttribute("aria-expanded", "false");
+            });
         });
     }
 
-    // Theme
     const darkToggle = document.getElementById("darkModeToggle");
+    const savedTheme = safeStorageGet("edugm-theme");
+    const useDark = savedTheme === "dark";
 
-    const savedTheme = localStorage.getItem("edugm-theme");
-
-    if (savedTheme === "dark") {
-        document.body.classList.add("dark");
-    }
+    document.body.classList.toggle("dark", useDark);
 
     if (darkToggle) {
-        darkToggle.checked = document.body.classList.contains("dark");
-
-        darkToggle.addEventListener("change", function () {
-            setTheme(darkToggle.checked);
+        darkToggle.checked = useDark;
+        darkToggle.addEventListener("change", () => {
+            const dark = darkToggle.checked;
+            document.body.classList.toggle("dark", dark);
+            safeStorageSet("edugm-theme", dark ? "dark" : "light");
         });
     }
 
-    function setTheme(dark) {
-        document.body.classList.toggle("dark", dark);
-
-        localStorage.setItem(
-            "edugm-theme",
-            dark ? "dark" : "light"
-        );
-    }
-
-    // Contact form
     initContact();
-
-    // Tools
     initTools();
-
-    // Home page popular tools
     renderHomeTools();
 
-    // Offline service worker
     const offlineStatus = document.getElementById("offlineStatus");
 
-    if ("serviceWorker" in navigator &&
-        location.protocol !== "file:") {
-
+    if ("serviceWorker" in navigator && location.protocol !== "file:") {
         navigator.serviceWorker.register("./sw.js")
-            .then(function () {
+            .then(registration => {
                 if (offlineStatus) {
-                    offlineStatus.textContent =
-                        "Offline app-shell support is registered.";
+                    offlineStatus.textContent = "Offline support is ready.";
                 }
-            })
-            .catch(function (error) {
-                console.error("Service worker error:", error);
 
+                // Check for a newer app shell without interrupting current work.
+                registration.update().catch(() => {});
+            })
+            .catch(error => {
+                console.error("EduGM service worker registration failed:", error);
                 if (offlineStatus) {
-                    offlineStatus.textContent =
-                        "Offline support could not be registered.";
+                    offlineStatus.textContent = "Offline support is unavailable on this connection.";
                 }
             });
-
     } else if (offlineStatus) {
-        offlineStatus.textContent =
-            "Service workers require HTTPS or localhost.";
+        offlineStatus.textContent = "Offline support requires HTTPS or the installed Android app.";
     }
 
-});
+    const updateNetworkStatus = () => {
+        document.documentElement.dataset.connection = navigator.onLine ? "online" : "offline";
+    };
+
+    window.addEventListener("online", updateNetworkStatus);
+    window.addEventListener("offline", updateNetworkStatus);
+    updateNetworkStatus();
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initializeEduGM, { once: true });
+} else {
+    initializeEduGM();
+}
