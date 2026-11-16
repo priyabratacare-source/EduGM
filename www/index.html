@@ -2,98 +2,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#6546e8">
-    <meta name="description" content="EduGM UniTools - Your everyday digital toolkit.">
-    <title>EduGM UniTools</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#6546e8">
+  <title>EduGM UniTools</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- PDF and document libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
 </head>
 <body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="assets/logo.png" alt="EduGM Logo" onerror="this.style.display='none'">
+      <div>
+        <strong>EduGM UniTools</strong>
+        <small>Your Everyday Digital Toolkit</small>
+      </div>
+    </div>
+    <button class="icon-button" id="themeButton" aria-label="Toggle theme">☾</button>
+  </header>
 
-    <header class="topbar">
-        <div class="brand">
-            <div class="brand-icon">E</div>
-            <div>
-                <h2>EduGM <span>UniTools</span></h2>
-                <small>Your Everyday Digital Toolkit</small>
-            </div>
+  <main>
+    <section id="homePage" class="page active">
+      <section class="hero">
+        <span class="eyebrow">EDUGM DIGITAL TOOLKIT</span>
+        <h1>Everything you need,<br>in one place.</h1>
+        <p>Simple tools for documents, images and students.</p>
+        <input id="searchInput" type="search" placeholder="Search for a tool...">
+      </section>
+
+      <div class="section-heading">
+        <h2>Explore tools</h2>
+        <span id="toolCount"></span>
+      </div>
+
+      <div class="filters" id="filters">
+        <button class="filter active" data-category="All">All</button>
+        <button class="filter" data-category="PDF">PDF</button>
+        <button class="filter" data-category="Images">Images</button>
+        <button class="filter" data-category="Documents">Documents</button>
+        <button class="filter" data-category="Student">Student</button>
+      </div>
+
+      <div id="toolsGrid" class="tools-grid"></div>
+
+      <div class="privacy-note">
+        <span>🔒</span>
+        <div>
+          <strong>Your files stay on your device</strong>
+          <p>Supported file tools process files locally. Only Contact Us messages are sent to Firebase.</p>
         </div>
-        <button class="icon-btn" id="themeButton" aria-label="Toggle theme">☾</button>
-    </header>
+      </div>
+    </section>
 
-    <main>
-        <section class="welcome">
-            <p class="eyebrow">WELCOME TO EDUGM</p>
-            <h1>Everything you need,<br><span>in one place.</span></h1>
-            <p class="welcome-text">
-                Simple, fast and useful tools for your everyday digital work.
-            </p>
-        </section>
+    <section id="toolPage" class="page">
+      <button class="back-button" onclick="showPage('homePage')">← Back to tools</button>
+      <div class="tool-heading">
+        <span id="toolIcon">🛠️</span>
+        <div>
+          <h1 id="toolTitle">Tool</h1>
+          <p id="toolDescription"></p>
+        </div>
+      </div>
+      <div id="toolWorkspace" class="workspace"></div>
+      <div id="toolResult" class="result"></div>
+    </section>
 
-        <section class="search-section">
-            <div class="search-box">
-                <span>⌕</span>
-                <input type="search" id="searchInput"
-                       placeholder="Search tools...">
-            </div>
-        </section>
+    <section id="aboutPage" class="page content-page">
+      <h1>About EduGM UniTools</h1>
+      <img class="about-logo" src="assets/logo.png" alt="EduGM UniTools">
+      <h2>Your Everyday Digital Toolkit</h2>
+      <p>EduGM UniTools is a collection of useful digital utilities designed to make everyday document, image and student tasks easier.</p>
 
-        <section class="quick-section">
-            <div class="section-heading">
-                <h2>Explore Tools</h2>
-                <span>All tools</span>
-            </div>
+      <h3>Our features</h3>
+      <ul>
+        <li>PDF and document utilities</li>
+        <li>Image conversion and resizing</li>
+        <li>Student calculators and helpers</li>
+        <li>QR code generation</li>
+        <li>Privacy-conscious local file processing</li>
+      </ul>
 
-            <div class="category-grid">
-                <button class="category active" data-category="all">All</button>
-                <button class="category" data-category="pdf">PDF</button>
-                <button class="category" data-category="image">Images</button>
-                <button class="category" data-category="document">Documents</button>
-                <button class="category" data-category="student">Student</button>
-            </div>
-        </section>
+      <h3>Privacy</h3>
+      <p>Files selected for supported tools are processed on your device. Contact messages are submitted to our Firebase database. Do not send passwords, payment details or sensitive personal information through Contact Us.</p>
 
-        <section class="tools-section">
-            <div class="section-heading">
-                <h2>Popular Tools</h2>
-                <span id="toolCount">12 tools</span>
-            </div>
+      <p class="version">EduGM UniTools · Version 1.0.0</p>
+    </section>
 
-            <div class="tools-grid" id="toolsGrid"></div>
-            <div class="empty-state" id="emptyState" hidden>
-                No tools found. Try another search.
-            </div>
-        </section>
+    <section id="contactPage" class="page content-page">
+      <h1>Contact Us</h1>
+      <p>Have a question, suggestion or issue? Send a message to the EduGM team.</p>
 
-        <section class="privacy-note">
-            <span class="privacy-icon">🔒</span>
-            <div>
-                <strong>Your files, your privacy</strong>
-                <p>Our tools are designed to process files on your device wherever possible.</p>
-            </div>
-        </section>
-    </main>
+      <form id="contactForm">
+        <label>Your name</label>
+        <input name="name" required maxlength="80" placeholder="Enter your name">
 
-    <nav class="bottom-nav">
-        <button class="nav-item selected">
-            <span>⌂</span>
-            <small>Home</small>
-        </button>
-        <button class="nav-item" id="allToolsButton">
-            <span>▦</span>
-            <small>Tools</small>
-        </button>
-        <button class="nav-item" id="favoritesButton">
-            <span>♡</span>
-            <small>Saved</small>
-        </button>
-        <button class="nav-item" id="aboutButton">
-            <span>ⓘ</span>
-            <small>About</small>
-        </button>
-    </nav>
+        <label>Email address</label>
+        <input name="email" type="email" required maxlength="120" placeholder="you@example.com">
 
-    <script src="js/app.js"></script>
+        <label>Subject</label>
+        <select name="subject" required>
+          <option value="">Select a subject</option>
+          <option>General enquiry</option>
+          <option>Report a problem</option>
+          <option>Feature suggestion</option>
+          <option>Feedback</option>
+          <option>Other</option>
+        </select>
+
+        <label>Your message</label>
+        <textarea name="message" required minlength="5" maxlength="3000" rows="6" placeholder="Write your message..."></textarea>
+
+        <button class="primary-button" id="sendMessageButton" type="submit">Send message</button>
+        <p id="contactStatus" role="status"></p>
+      </form>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-page="homePage">⌂<span>Home</span></button>
+    <button class="nav-item" data-page="homePage" data-category-link="All">▦<span>Tools</span></button>
+    <button class="nav-item" data-page="aboutPage">ⓘ<span>About</span></button>
+    <button class="nav-item" data-page="contactPage">✉<span>Contact</span></button>
+  </nav>
+
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>
