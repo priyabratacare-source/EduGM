@@ -787,45 +787,6 @@ async function loadPdfJs() {
     return window.__edugmPdfJs;
 }
 
-function pdfTool() {
-    workspace(`
-        <h2>📕 PDF Viewer</h2>
-
-        ${fileField("application/pdf,.pdf")}
-
-        ${actionButton("Open PDF")}
-    `, () => {
-        const file = getFile();
-
-        if (!file) {
-            throw new Error("Please select a PDF file.");
-        }
-
-        if (
-            file.type !== "application/pdf" &&
-            !file.name.toLowerCase().endsWith(".pdf")
-        ) {
-            throw new Error("The selected file is not a PDF.");
-        }
-
-        const url = URL.createObjectURL(file);
-
-        const frame = document.createElement("iframe");
-
-        frame.src = url;
-        frame.title = "Local PDF Viewer";
-
-        frame.style.width = "100%";
-        frame.style.height = "65vh";
-        frame.style.border = "0";
-
-        const result = $("#toolResult");
-
-        result.replaceChildren(frame);
-        result.className = "tool-result";
-    });
-}
-
 /* ------------------------------
    TEXT TO PDF
 ------------------------------ */
