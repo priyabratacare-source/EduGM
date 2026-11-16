@@ -1247,6 +1247,19 @@ function imageToPdfTool() {
    BATCH IMAGE SIZE REDUCER
 ------------------------------ */
 
+async function loadJsZip() {
+    if (window.JSZip) return window.JSZip;
+    if (window.__edugmZipPromise) return window.__edugmZipPromise;
+    window.__edugmZipPromise = new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = "https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js";
+        script.onload = () => window.JSZip ? resolve(window.JSZip) : reject(new Error("ZIP library did not load."));
+        script.onerror = () => reject(new Error("Batch ZIP download needs an internet connection the first time."));
+        document.head.appendChild(script);
+    });
+    return window.__edugmZipPromise;
+}
+
 function imageReducerTool() {
     workspace(`
         <h2>📉 Image Size Reducer</h2>
@@ -1268,8 +1281,11 @@ function imageReducerTool() {
         if (!files.length) return showResult("Choose at least one image.", true);
         if (files.length > 50) return showResult("Please process up to 50 images at a time.", true);
         button.disabled = true;
+        button.textContent = "Compressing images...";
         let saved = 0, originalBytes = 0, outputBytes = 0;
         try {
+            const JSZip = await loadJsZip();
+            const zip = new JSZip();
             const format = $("#reduceFormat").value;
             const maxWidth = Number($("#reduceMaxWidth").value);
             if (!Number.isFinite(maxWidth) || maxWidth < 0) throw new Error("Enter a valid maximum width.");
@@ -1285,17 +1301,21 @@ function imageReducerTool() {
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                 const blob = await canvasBlob(canvas, format, Number(quality.value) / 100);
                 const ext = format === "image/png" ? "png" : format === "image/webp" ? "webp" : "jpg";
-                createDownload(blob, safeFileName(file.name, "-reduced." + ext));
+                zip.file(safeFileName(file.name, "-reduced." + ext), blob);
                 originalBytes += file.size;
                 outputBytes += blob.size;
                 saved++;
+                button.textContent = "Compressed " + saved + " of " + files.length + "...";
             }
+            const archive = await zip.generateAsync({ type: "blob" });
+            createDownload(archive, "EduGM-Reduced-Images.zip");
             const reduction = originalBytes ? Math.max(0, (1 - outputBytes / originalBytes) * 100) : 0;
-            showResult(saved + " image(s) processed. Total size: " + originalBytes + " → " + outputBytes + " bytes (" + reduction.toFixed(1) + "% smaller). Downloads may appear one by one.");
+            showResult(saved + " image(s) compressed into one ZIP. Image data: " + originalBytes + " → " + outputBytes + " bytes (" + reduction.toFixed(1) + "% smaller).");
         } catch (error) {
             showResult(error.message || "Batch compression failed.", true);
         } finally {
             button.disabled = false;
+            button.textContent = "Reduce image sizes";
         }
     });
 }
