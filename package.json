@@ -3,10 +3,12 @@
   "name": "edugm-unitools",
   "version": "1.0.0",
   "private": true,
-  "description": "EduGM UniTools Android application",
+  "description": "EduGM UniTools - Academic tools and student utilities",
   "type": "module",
   "scripts": {
+    "android:add": "cap add android",
     "android:sync": "cap sync android",
+    "android:build": "cd android && ./gradlew assembleDebug",
     "android:open": "cap open android"
   },
   "dependencies": {
