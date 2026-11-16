@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#6546e8">
+    <title>All Tools | EduGM UniTools</title>
+    <link rel="icon" href="assets/logo.png">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+    <a class="brand" href="index.html">
+        <img src="assets/logo.png" alt="EduGM Logo"
+             onerror="this.style.display='none'">
+        <span>EduGM <b>UniTools</b></span>
+    </a>
+
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+        ☰
+    </button>
+
+    <nav class="main-nav" id="mainNav">
+        <a href="index.html">Home</a>
+        <a class="active" href="tools.html">Tools</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact Us</a>
+        <a href="settings.html">Settings</a>
+    </nav>
+</header>
+
+<main class="container">
+
+    <section class="page-heading">
+        <span class="eyebrow">EDUGM UTILITIES</span>
+        <h1>All Tools</h1>
+        <p>Select a tool to get started. Supported local tools process your files on your device.</p>
+    </section>
+
+    <div class="tools-search">
+        <span>⌕</span>
+        <input type="search" id="toolSearch"
+               placeholder="Search calculators and tools...">
+    </div>
+
+    <div class="tools-layout">
+
+        <aside class="tool-sidebar">
+            <h3>Available Tools</h3>
+            <div id="toolMenu" class="tool-menu">
+                Loading tools...
+            </div>
+        </aside>
+
+        <section class="tool-workspace card">
+            <div id="toolWorkspace">
+                <div class="empty-workspace">
+                    <div class="empty-icon">🧰</div>
+                    <h2>Select a Tool</h2>
+                    <p>Choose a tool from the list to start.</p>
+                </div>
+            </div>
+
+            <div id="toolResult" class="tool-result" aria-live="polite"></div>
+        </section>
+
+    </div>
+
+</main>
+
+<footer class="site-footer">
+    <div class="footer-bottom">
+        © <span id="currentYear"></span> EduGM UniTools · CodeBihin
+    </div>
+</footer>
+
+<script type="module" src="js/app.js"></script>
+
+</body>
+</html>
