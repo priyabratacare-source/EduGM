@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "359466843038",
+    "project_id": "edugm-unitools-donations",
+    "storage_bucket": "edugm-unitools-donations.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:359466843038:android:4dd3de15a5603e716f348f",
+        "android_client_info": {
+          "package_name": "in.codebihin.edugm"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsQLCOXUOFnAxiQ95nDDBkqtn-7_a7tPs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
