@@ -1,3 +1,4 @@
+
 {
   "appId": "in.codebihin.edugm",
   "appName": "EduGM UniTools",
@@ -5,9 +6,7 @@
   "server": {
     "androidScheme": "https"
   },
-  "plugins": {
-    "SplashScreen": {
-      "launchShowDuration": 1500
-    }
+  "android": {
+    "allowMixedContent": false
   }
 }
