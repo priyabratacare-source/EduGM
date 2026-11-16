@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download project
+      - name: Checkout project
         uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -31,6 +31,9 @@ jobs:
 
       - name: Create Android project
         run: npx cap add android
+
+      - name: Generate Android app icons
+        run: npx capacitor-assets generate --android
 
       - name: Sync application
         run: npx cap sync android
