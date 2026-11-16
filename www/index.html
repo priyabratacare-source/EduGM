@@ -2,134 +2,133 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#6546e8">
-  <title>EduGM UniTools</title>
-  <link rel="stylesheet" href="css/style.css">
-
-  <!-- PDF and document libraries -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#6546e8">
+    <meta name="description" content="EduGM UniTools - Educational calculators and student utilities.">
+    <title>EduGM UniTools | Home</title>
+    <link rel="icon" href="assets/logo.png">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <img src="assets/logo.png" alt="EduGM Logo" onerror="this.style.display='none'">
-      <div>
-        <strong>EduGM UniTools</strong>
-        <small>Your Everyday Digital Toolkit</small>
-      </div>
+
+<header class="site-header">
+    <a class="brand" href="index.html">
+        <img src="assets/logo.png" alt="EduGM Logo"
+             onerror="this.style.display='none'">
+        <span>EduGM <b>UniTools</b></span>
+    </a>
+
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+        ☰
+    </button>
+
+    <nav class="main-nav" id="mainNav">
+        <a class="active" href="index.html">Home</a>
+        <a href="tools.html">Tools</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact Us</a>
+        <a href="settings.html">Settings</a>
+    </nav>
+</header>
+
+<main class="container">
+
+    <section class="hero">
+        <div class="hero-content">
+            <span class="hero-label">EDUCATION · TECHNOLOGY · SIMPLICITY</span>
+
+            <h1>Learn. Calculate.<br>Grow.</h1>
+
+            <p>
+                Your everyday academic tools in one place.
+                Calculate marks, manage images and access useful
+                student utilities with EduGM UniTools.
+            </p>
+
+            <div class="hero-actions">
+                <a href="tools.html" class="btn btn-white">
+                    Explore Tools →
+                </a>
+                <a href="about.html" class="btn btn-outline-white">
+                    About EduGM
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-symbol">
+            <div class="hero-circle">E</div>
+            <span>EduGM UniTools</span>
+            <small>Learn · Calculate · Grow</small>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-heading">
+            <div>
+                <span class="eyebrow">GET STARTED</span>
+                <h2>Popular Tools</h2>
+                <p>Useful tools for your academic journey.</p>
+            </div>
+
+            <a href="tools.html" class="text-link">View all tools →</a>
+        </div>
+
+        <div class="tool-grid" id="homeTools">
+            <div class="loading-card">Loading tools...</div>
+        </div>
+    </section>
+
+    <section class="feature-grid">
+        <article class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3>Academic Calculators</h3>
+            <p>Calculate percentage, SGPA, CGPA and attendance.</p>
+        </article>
+
+        <article class="feature-card">
+            <div class="feature-icon">🖼️</div>
+            <h3>Image Utilities</h3>
+            <p>Resize, compress and crop images on your device.</p>
+        </article>
+
+        <article class="feature-card">
+            <div class="feature-icon">🔒</div>
+            <h3>Local Processing</h3>
+            <p>Supported tools process files locally without uploading them.</p>
+        </article>
+    </section>
+
+    <section class="cta-section">
+        <h2>Need help or have a suggestion?</h2>
+        <p>Contact the EduGM team and share your feedback.</p>
+        <a href="contact.html" class="btn btn-primary">Contact Us</a>
+    </section>
+
+</main>
+
+<footer class="site-footer">
+    <div class="footer-inner">
+        <div>
+            <h3>EduGM UniTools</h3>
+            <p>Learn · Calculate · Grow</p>
+        </div>
+
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="tools.html">Tools</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </div>
     </div>
-    <button class="icon-button" id="themeButton" aria-label="Toggle theme">☾</button>
-  </header>
 
-  <main>
-    <section id="homePage" class="page active">
-      <section class="hero">
-        <span class="eyebrow">EDUGM DIGITAL TOOLKIT</span>
-        <h1>Everything you need,<br>in one place.</h1>
-        <p>Simple tools for documents, images and students.</p>
-        <input id="searchInput" type="search" placeholder="Search for a tool...">
-      </section>
+    <div class="footer-bottom">
+        © <span id="currentYear"></span> EduGM UniTools.
+        A CodeBihin initiative.
+    </div>
+</footer>
 
-      <div class="section-heading">
-        <h2>Explore tools</h2>
-        <span id="toolCount"></span>
-      </div>
+<script type="module" src="js/app.js"></script>
 
-      <div class="filters" id="filters">
-        <button class="filter active" data-category="All">All</button>
-        <button class="filter" data-category="PDF">PDF</button>
-        <button class="filter" data-category="Images">Images</button>
-        <button class="filter" data-category="Documents">Documents</button>
-        <button class="filter" data-category="Student">Student</button>
-      </div>
-
-      <div id="toolsGrid" class="tools-grid"></div>
-
-      <div class="privacy-note">
-        <span>🔒</span>
-        <div>
-          <strong>Your files stay on your device</strong>
-          <p>Supported file tools process files locally. Only Contact Us messages are sent to Firebase.</p>
-        </div>
-      </div>
-    </section>
-
-    <section id="toolPage" class="page">
-      <button class="back-button" onclick="showPage('homePage')">← Back to tools</button>
-      <div class="tool-heading">
-        <span id="toolIcon">🛠️</span>
-        <div>
-          <h1 id="toolTitle">Tool</h1>
-          <p id="toolDescription"></p>
-        </div>
-      </div>
-      <div id="toolWorkspace" class="workspace"></div>
-      <div id="toolResult" class="result"></div>
-    </section>
-
-    <section id="aboutPage" class="page content-page">
-      <h1>About EduGM UniTools</h1>
-      <img class="about-logo" src="assets/logo.png" alt="EduGM UniTools">
-      <h2>Your Everyday Digital Toolkit</h2>
-      <p>EduGM UniTools is a collection of useful digital utilities designed to make everyday document, image and student tasks easier.</p>
-
-      <h3>Our features</h3>
-      <ul>
-        <li>PDF and document utilities</li>
-        <li>Image conversion and resizing</li>
-        <li>Student calculators and helpers</li>
-        <li>QR code generation</li>
-        <li>Privacy-conscious local file processing</li>
-      </ul>
-
-      <h3>Privacy</h3>
-      <p>Files selected for supported tools are processed on your device. Contact messages are submitted to our Firebase database. Do not send passwords, payment details or sensitive personal information through Contact Us.</p>
-
-      <p class="version">EduGM UniTools · Version 1.0.0</p>
-    </section>
-
-    <section id="contactPage" class="page content-page">
-      <h1>Contact Us</h1>
-      <p>Have a question, suggestion or issue? Send a message to the EduGM team.</p>
-
-      <form id="contactForm">
-        <label>Your name</label>
-        <input name="name" required maxlength="80" placeholder="Enter your name">
-
-        <label>Email address</label>
-        <input name="email" type="email" required maxlength="120" placeholder="you@example.com">
-
-        <label>Subject</label>
-        <select name="subject" required>
-          <option value="">Select a subject</option>
-          <option>General enquiry</option>
-          <option>Report a problem</option>
-          <option>Feature suggestion</option>
-          <option>Feedback</option>
-          <option>Other</option>
-        </select>
-
-        <label>Your message</label>
-        <textarea name="message" required minlength="5" maxlength="3000" rows="6" placeholder="Write your message..."></textarea>
-
-        <button class="primary-button" id="sendMessageButton" type="submit">Send message</button>
-        <p id="contactStatus" role="status"></p>
-      </form>
-    </section>
-  </main>
-
-  <nav class="bottom-nav">
-    <button class="nav-item active" data-page="homePage">⌂<span>Home</span></button>
-    <button class="nav-item" data-page="homePage" data-category-link="All">▦<span>Tools</span></button>
-    <button class="nav-item" data-page="aboutPage">ⓘ<span>About</span></button>
-    <button class="nav-item" data-page="contactPage">✉<span>Contact</span></button>
-  </nav>
-
-  <script type="module" src="js/app.js"></script>
 </body>
 </html>
