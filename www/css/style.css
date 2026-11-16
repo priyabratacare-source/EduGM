@@ -891,3 +891,87 @@ body.dark .cta-section {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* TOOL WORKSPACE ENHANCEMENTS */
+.tool-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 12px 0 18px;
+}
+
+.tool-actions .btn {
+    flex: 1 1 150px;
+}
+
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 43px;
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    background: var(--surface);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.pdf-preview {
+    width: 100%;
+    margin-top: 16px;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.pdf-preview iframe {
+    display: block;
+    width: 100%;
+    min-height: 65vh;
+    border: 0;
+    background: #f4f4f6;
+}
+
+.tool-workspace .grid.two {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.tool-workspace button:disabled {
+    opacity: .65;
+    cursor: wait;
+}
+
+.tool-workspace input[type="file"] {
+    max-width: 100%;
+}
+
+.tool-workspace output {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+@media (max-width: 520px) {
+    .tool-workspace .grid.two {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+    .tool-actions {
+        flex-direction: column;
+    }
+    .tool-actions .btn,
+    .tool-actions .btn-secondary {
+        width: 100%;
+    }
+    .pdf-preview iframe {
+        min-height: 55vh;
+    }
+}
