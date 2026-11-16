@@ -973,7 +973,7 @@ function pdfTool() {
         <p class="muted">Choose a PDF from your device. Your selected file stays on this device.</p>
         <div class="field">
             <label for="pdfInput">Choose PDF file</label>
-            <input id="pdfInput" type="file" accept="application/pdf,.pdf">
+            <input id="pdfInput" type="file" accept="application/pdf,.pdf" multiple>
         </div>
         <div class="tool-actions">
             <button type="button" class="btn btn-primary" id="openPdf">View PDF</button>
@@ -989,7 +989,16 @@ function pdfTool() {
             <label for="pdfStampSize">Text size</label>
             <input id="pdfStampSize" type="number" min="8" max="60" value="18">
         </div>
-        <button type="button" class="btn btn-primary" id="saveEditedPdf">Apply text & download edited PDF</button>
+        <div class="field">
+            <label for="pdfRotate">Rotate every page</label>
+            <select id="pdfRotate"><option value="0">No rotation</option><option value="90">90° clockwise</option><option value="180">180°</option><option value="270">270° clockwise</option></select>
+        </div>
+        <div class="field">
+            <label for="pdfRemovePages">Remove page numbers (optional)</label>
+            <input id="pdfRemovePages" type="text" placeholder="Example: 2, 4, 7">
+            <small class="muted">Page numbers start at 1. You can also select multiple PDFs above to merge them.</small>
+        </div>
+        <button type="button" class="btn btn-primary" id="saveEditedPdf">Merge / edit & download PDF</button>
         <div id="pdfPreview" class="pdf-preview" aria-live="polite"></div>
         <p class="muted small">Viewing uses your browser's PDF support. Editing adds a text stamp to each page; it does not rewrite existing PDF text.</p>
     `, () => {});
@@ -1027,30 +1036,52 @@ function pdfTool() {
 
     $("#saveEditedPdf").addEventListener("click", async event => {
         const button = event.currentTarget;
-        const file = input.files?.[0];
+        const files = [...(input.files || [])];
+        const file = files[0];
         const stamp = $("#pdfStamp").value.trim();
-        if (!file) return showResult("Select a PDF first.", true);
-        if (!stamp) return showResult("Enter the text you want to add.", true);
+        if (!file) return showResult("Select at least one PDF first.", true);
+        if (files.some(f => !f.name.toLowerCase().endsWith(".pdf") && f.type !== "application/pdf")) return showResult("Only PDF files can be merged.", true);
+        if (!stamp && !$("#pdfRemovePages").value.trim() && Number($("#pdfRotate").value) === 0 && files.length < 2) return showResult("Choose a PDF edit: add text, rotate pages, remove pages, or select multiple PDFs to merge.", true);
         const size = Number($("#pdfStampSize").value);
         if (!Number.isFinite(size) || size < 8 || size > 60) return showResult("Text size must be between 8 and 60.", true);
         button.disabled = true;
         button.textContent = "Editing PDF...";
         try {
-            const { PDFDocument, StandardFonts, rgb } = await loadPdfLib();
-            const doc = await PDFDocument.load(await file.arrayBuffer());
-            const font = await doc.embedFont(StandardFonts.Helvetica);
+            const { PDFDocument, StandardFonts, rgb, degrees } = await loadPdfLib();
+            const doc = await PDFDocument.create();
+            for (const selected of files) {
+                const source = await PDFDocument.load(await selected.arrayBuffer());
+                const copied = await doc.copyPages(source, source.getPageIndices());
+                copied.forEach(page => doc.addPage(page));
+            }
+
+            const removeText = $("#pdfRemovePages").value.trim();
+            if (removeText) {
+                const indexes = [...new Set(removeText.split(",").map(v => Number(v.trim()) - 1))];
+                if (indexes.some(v => !Number.isInteger(v) || v < 0 || v >= doc.getPageCount())) {
+                    throw new Error("Enter valid page numbers within the merged PDF.");
+                }
+                if (indexes.length >= doc.getPageCount()) throw new Error("You cannot remove every page.");
+                indexes.sort((a, b) => b - a).forEach(index => doc.removePage(index));
+            }
+
+            const rotation = Number($("#pdfRotate").value);
+            const font = stamp ? await doc.embedFont(StandardFonts.Helvetica) : null;
             doc.getPages().forEach(page => {
-                const { width, height } = page.getSize();
-                page.drawText(stamp, {
-                    x: 28, y: 24, size, font,
-                    color: rgb(0.35, 0.25, 0.75),
-                    opacity: 0.75,
-                    maxWidth: Math.max(50, width - 56)
-                });
+                if (rotation) page.setRotation(degrees((page.getRotation().angle + rotation) % 360));
+                if (stamp) {
+                    const { width } = page.getSize();
+                    page.drawText(stamp, {
+                        x: 28, y: 24, size, font,
+                        color: rgb(0.35, 0.25, 0.75),
+                        opacity: 0.75,
+                        maxWidth: Math.max(50, width - 56)
+                    });
+                }
             });
             const bytes = await doc.save();
             createDownload(new Blob([bytes], { type: "application/pdf" }), safeFileName(file.name, "-edited.pdf"));
-            showResult("Edited PDF downloaded. Existing content was preserved and a text stamp was added.");
+            showResult("PDF saved: " + files.length + " file(s) merged; " + doc.getPageCount() + " page(s) in the result.");
         } catch (error) {
             console.error(error);
             showResult(error.message || "Could not edit this PDF. It may be password-protected or damaged.", true);
